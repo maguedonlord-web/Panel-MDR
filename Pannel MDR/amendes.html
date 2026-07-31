@@ -520,7 +520,7 @@ copyBtn.addEventListener('click', () => {
     return;
   }
 
-  let textToCopy = "📜 **DÉTAIL DES AMENDES**\n";
+  let textToCopy = "AMENDES : \n";
   let appliedTotal = 0;
 
   selected.forEach(o => {
@@ -533,11 +533,11 @@ copyBtn.addEventListener('click', () => {
     } else {
       const totalItem = o.max * state[o.id].multiplier;
       appliedTotal += totalItem;
-      textToCopy += `• ${o.title} : ${o.max} $ × ${state[o.id].multiplier} = ${totalItem.toLocaleString('fr-FR')} $\n`;
+      textToCopy += `• ${o.title} : ${totalItem.toLocaleString('fr-FR')} $\n`;
     }
   });
 
-  textToCopy += `\n💰 **TOTAL À PAYER : ${appliedTotal.toLocaleString('fr-FR')} $**`;
+  textToCopy += `\nTOTAL : ${appliedTotal.toLocaleString('fr-FR')} $**`;
 
   navigator.clipboard.writeText(textToCopy).then(() => {
     copyBtn.classList.add('copied');
