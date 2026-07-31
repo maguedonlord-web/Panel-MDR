@@ -90,7 +90,14 @@ details[open] .chevron{transform:rotate(90deg)}
 .preview-head h2{font-family:var(--font-display);font-size:19px;margin:0;color:var(--navy)}
 .preview-tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-deep);border:1px solid var(--gold);padding:3px 9px;border-radius:3px}
 .preview-body{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
-.preview-body img{max-width:100%;max-height:560px;border-radius:4px;box-shadow:0 4px 18px rgba(27,42,74,.14)}
+.preview-body img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 18px rgba(27,42,74,.14);
+}
 .preview-footer{padding:12px 20px;border-top:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center}
 .preview-footer a{font-family:var(--font-mono);font-size:12px;color:var(--navy);text-decoration:none}
 .preview-footer a:hover{text-decoration:underline}
