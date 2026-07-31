@@ -1,276 +1,139 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Archives officielles — Documentation</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-/* ==========================================================================
-   PANEL DE DOCUMENTATION — fichier autonome (HTML + CSS + JS)
-   Pour ajouter / modifier un document : va directement à la section
-   "DONNÉES DES DOCUMENTS" tout en bas du <script>. Pas besoin de toucher
-   au reste du fichier.
-   ========================================================================== */
-
-:root {
-  --navy: #1b2a4a;
-  --navy-deep: #0f1930;
-  --paper: #f6f1e7;
-  --paper-line: #e3d9c3;
-  --card: #fffdf8;
-  --card-border: #e6dcc7;
-  --gold: #a9822f;
-  --gold-deep: #7c5e1f;
-  --seal-red: #8c2f2f;
-  --ink: #241f16;
-  --ink-soft: #6b6455;
-  --font-display: 'Fraunces', serif;
-  --font-body: 'Source Sans 3', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+:root{
+  --navy:#1b2a4a; --navy-deep:#0f1930;
+  --paper:#f6f1e7; --paper-line:#e3d9c3;
+  --card:#fffdf8; --card-border:#e6dcc7;
+  --gold:#a9822f; --gold-deep:#7c5e1f;
+  --ink:#241f16; --ink-soft:#6b6455;
+  --font-display:'Fraunces',serif;
+  --font-body:'Source Sans 3',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
 }
 
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  background: var(--paper);
-  background-image: radial-gradient(circle at 1px 1px, var(--paper-line) 1px, transparent 0);
-  background-size: 22px 22px;
-  color: var(--ink);
-  font-family: var(--font-body);
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:radial-gradient(circle at 1px 1px,var(--paper-line) 1px,transparent 0);
+  background-size:22px 22px;
+  color:var(--ink);
+  font-family:var(--font-body);
 }
 
-/* ---------- En-tête ---------- */
-header {
-  background: var(--navy);
-  color: #f3ead9;
-  padding: 20px 32px;
-  border-bottom: 4px solid var(--gold);
+/* Header */
+header{
+  background:var(--navy);
+  color:#f3ead9;
+  padding:30px 32px 26px;
+  border-bottom:4px solid var(--gold);
 }
+.header-inner{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:24px;
+  flex-wrap:wrap;
+}
+.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#d8c187;margin:0 0 8px}
+h1{font-family:var(--font-display);font-weight:700;font-size:32px;margin:0 0 8px}
+header p.sub{margin:0;color:#c9d0dd;font-size:14px;max-width:560px;line-height:1.5}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.nav-links a{font-family:var(--font-mono);font-size:12px;color:#f3ead9;text-decoration:none;border:1px solid rgba(243,234,217,.4);padding:7px 12px;border-radius:5px}
+.nav-links a:hover,.nav-links a.current{border-color:var(--gold);color:var(--gold)}
+.seal{width:62px;height:62px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;color:var(--gold);font-weight:700}
 
-.header-inner {
-  max-width: 1800px;
-  margin: 0 auto;
-  display: grid;
-  /* 3 colonnes : 
-     1. Logo à gauche 
-     2. Espace restant avec le texte centré au milieu 
-     3. Espaceur droit égal au logo pour garantir un centrage absolu du texte
-  */
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 24px;
+/* Search */
+.search-bar{max-width:1200px;margin:-20px auto 0;padding:0 32px;position:relative;z-index:5}
+.search-bar input{
+  width:100%;padding:13px 16px 13px 42px;border-radius:6px;border:1.5px solid var(--card-border);
+  background:var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="%236b6455" stroke-width="2"><circle cx="6.5" cy="6.5" r="5.5"/><path d="M11 11l4 4"/></svg>') 12px center/18px no-repeat;
+  font-family:var(--font-body);font-size:14.5px;color:var(--ink);box-shadow:0 3px 10px rgba(27,42,74,.12)
 }
+.search-bar input:focus{outline:2px solid var(--gold);outline-offset:1px}
 
-.header-logo {
-  height: 120px;       /* Ajustez la hauteur du grand logo selon vos besoins */
-  width: auto;
-  display: block;
-}
+/* Layout */
+.layout{max-width:1200px;margin:0 auto;padding:26px 32px 60px;display:grid;grid-template-columns:300px 1fr;gap:20px}
+@media (max-width:860px){.layout{grid-template-columns:1fr}}
 
-.header-center {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+/* Sidebar */
+.sidebar{display:flex;flex-direction:column;gap:12px}
+details.category{background:var(--card);border:1.5px solid var(--card-border);border-radius:8px;overflow:hidden}
+details.category[open] summary{border-bottom:1px solid var(--card-border)}
+summary.cat-head{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)}
+summary.cat-head::-webkit-details-marker{display:none}
+.cat-left{display:flex;align-items:center;gap:10px}
+.cat-count{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);background:var(--paper);padding:1px 7px;border-radius:10px}
+.chevron{transition:transform .15s ease;color:var(--gold-deep)}
+details[open] .chevron{transform:rotate(90deg)}
+.doc-list{padding:4px}
+.doc-item{width:100%;text-align:left;background:transparent;border:none;border-radius:6px;padding:9px 10px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.doc-item:hover,.doc-item.active{background:var(--paper)}
+.doc-item.active{box-shadow:inset 3px 0 0 var(--gold)}
+.doc-title{font-size:13.5px;font-weight:600;color:var(--ink)}
+.doc-meta{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-soft)}
+.doc-empty{padding:14px 10px;font-size:12.5px;color:var(--ink-soft);font-style:italic}
 
-.eyebrow { 
-  font-family: var(--font-mono); 
-  font-size: 11.5px; 
-  letter-spacing: 0.14em; 
-  text-transform: uppercase; 
-  color: #d8c187; 
-  margin: 0 0 8px; 
-}
+/* Preview */
+.preview{background:var(--card);border:1.5px solid var(--card-border);border-radius:8px;min-height:520px;display:flex;flex-direction:column;overflow:hidden}
+.preview-head{padding:16px 20px;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.preview-head h2{font-family:var(--font-display);font-size:19px;margin:0;color:var(--navy)}
+.preview-tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-deep);border:1px solid var(--gold);padding:3px 9px;border-radius:3px}
+.preview-body{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+.preview-body img{max-width:100%;max-height:560px;border-radius:4px;box-shadow:0 4px 18px rgba(27,42,74,.14)}
+.preview-footer{padding:12px 20px;border-top:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center}
+.preview-footer a{font-family:var(--font-mono);font-size:12px;color:var(--navy);text-decoration:none}
+.preview-footer a:hover{text-decoration:underline}
+.preview-ref{font-family:var(--font-mono);font-size:11px;color:var(--ink-soft)}
 
-h1 { 
-  font-family: var(--font-display); 
-  font-weight: 700; 
-  font-size: 32px; 
-  margin: 0 0 8px; 
-}
+.preview-empty{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;color:var(--ink-soft);padding:40px}
+.preview-empty .seal{margin-bottom:6px}
+.preview-empty p.title{font-family:var(--font-display);font-size:17px;color:var(--navy);margin:0}
+.preview-empty p.text{font-size:13px;max-width:320px;margin:0}
 
-header p.sub { 
-  margin: 0 0 16px; 
-  color: #c9d0dd; 
-  font-size: 14px; 
-  max-width: 560px; 
-  line-height: 1.5; 
-}
+.img-missing{font-family:var(--font-mono);font-size:12px;color:var(--ink-soft);text-align:center;border:1px dashed var(--card-border);padding:30px 20px;border-radius:6px;max-width:340px}
 
-.nav-links { 
-  display: flex; 
-  gap: 8px; 
-  flex-wrap: wrap; 
-  justify-content: center;
-}
-
-.nav-links a {
-  font-family: var(--font-mono); 
-  font-size: 12px; 
-  color: #f3ead9; 
-  text-decoration: none;
-  border: 1px solid rgba(243,234,217,0.4); 
-  padding: 7px 12px; 
-  border-radius: 5px;
-}
-
-.nav-links a:hover, .nav-links a.current { 
-  border-color: var(--gold); 
-  color: var(--gold); 
-}
-
-/* Élément de compensation à droite pour garder le texte au VRAI centre de la page */
-.header-spacer {
-  visibility: hidden;
-  width: 120px; /* Même largeur approximative que le logo */
-}
-
-@media (max-width: 860px) {
-  .header-inner {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
-  }
-  .header-spacer { display: none; }
-}
-
-/* ---------- Barre de recherche ---------- */
-.search-bar {
-  max-width: 1200px; margin: -20px auto 0; padding: 0 32px;
-  position: relative; z-index: 5;
-}
-.search-bar input {
-  width: 100%; padding: 13px 16px 13px 42px; border-radius: 6px; border: 1.5px solid var(--card-border);
-  background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="%236b6455" stroke-width="2"><circle cx="6.5" cy="6.5" r="5.5"/><line x1="10.5" y1="10.5" x2="15" y2="15"/></svg>') no-repeat 14px center;
-  font-family: var(--font-body); font-size: 14.5px; color: var(--ink);
-  box-shadow: 0 3px 10px rgba(27,42,74,0.12);
-}
-.search-bar input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
-
-/* ---------- Mise en page principale ---------- */
-.layout {
-  max-width: 1200px; margin: 0 auto; padding: 26px 32px 60px;
-  display: grid; grid-template-columns: 300px 1fr; gap: 20px;
-}
-@media (max-width: 860px) {
-  .layout { grid-template-columns: 1fr; }
-}
-
-/* ---------- Sidebar / catégories ---------- */
-.sidebar { display: flex; flex-direction: column; gap: 12px; }
-
-details.category {
-  background: var(--card); border: 1.5px solid var(--card-border); border-radius: 8px; overflow: hidden;
-}
-details.category[open] summary { border-bottom: 1px solid var(--card-border); }
-summary.cat-head {
-  list-style: none; cursor: pointer; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between;
-  font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--navy);
-}
-summary.cat-head::-webkit-details-marker { display: none; }
-.cat-head .cat-left { display: flex; align-items: center; gap: 10px; }
-.cat-count { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); background: var(--paper); padding: 1px 7px; border-radius: 10px; }
-.chevron { transition: transform 0.15s ease; color: var(--gold-deep); }
-details[open] .chevron { transform: rotate(90deg); }
-
-.doc-list { padding: 4px; }
-.doc-item {
-  width: 100%; text-align: left; background: transparent; border: none; border-radius: 6px;
-  padding: 9px 10px; cursor: pointer; display: flex; flex-direction: column; gap: 2px;
-}
-.doc-item:hover, .doc-item.active { background: var(--paper); }
-.doc-item.active { box-shadow: inset 3px 0 0 var(--gold); }
-.doc-title { font-size: 13.5px; font-weight: 600; color: var(--ink); }
-.doc-meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-soft); }
-.doc-empty { padding: 14px 10px; font-size: 12.5px; color: var(--ink-soft); font-style: italic; }
-
-/* ---------- Zone d'aperçu ---------- */
-.preview {
-  background: var(--card); border: 1.5px solid var(--card-border); border-radius: 8px;
-  min-height: 520px; display: flex; flex-direction: column; overflow: hidden;
-}
-.preview-head { padding: 16px 20px; border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.preview-head h2 { font-family: var(--font-display); font-size: 19px; margin: 0; color: var(--navy); }
-.preview-tag {
-  font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--gold-deep); border: 1px solid var(--gold); padding: 3px 9px; border-radius: 3px;
-}
-.preview-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.preview-body img { max-width: 100%; max-height: 560px; border-radius: 4px; box-shadow: 0 4px 18px rgba(27,42,74,0.14); }
-.preview-footer { padding: 12px 20px; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; }
-.preview-footer a { font-family: var(--font-mono); font-size: 12px; color: var(--navy); text-decoration: none; }
-.preview-footer a:hover { text-decoration: underline; }
-.preview-ref { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
-
-.preview-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; color: var(--ink-soft); padding: 40px; }
-.preview-empty p.title { font-family: var(--font-display); font-size: 17px; color: var(--navy); margin: 0; }
-.preview-empty p.text { font-size: 13px; max-width: 320px; margin: 0; }
-
-.img-missing {
-  font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); text-align: center;
-  border: 1px dashed var(--card-border); padding: 30px 20px; border-radius: 6px; max-width: 340px;
-}
-
-footer.site-footer { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); padding: 10px 0 34px; }
+footer.site-footer{text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);padding:10px 0 34px}
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <!-- 1. Logo à gauche -->
-    <img src="votre-logo.png" alt="Logo" class="header-logo">
-
-    <!-- 2. Bloc texte centré -->
-    <div class="header-center">
-      <p class="eyebrow">Base documentaire interne</p>
-      <h1>Archives officielles</h1>
-      <p class="sub">Consultez les documents officiels et archives de la communauté.</p>
-      
-      <nav class="nav-links">
-        <a href="#" class="current">Tous les documents</a>
-        <a href="#">Récents</a>
-        <a href="#">Règlements</a>
-      </nav>
-    </div>
-
-    <!-- 3. Espaceur invisible pour équilibrer la grille -->
-    <div class="header-spacer"></div>
-  </div>
-</header>
-<body>
-
-<header>
-  <div class="header-inner">
-     <div class="header-container">
-    <img src="mandatory.png" alt="Logo" class="header-logo">
-    </div>
     <div>
       <p class="eyebrow">Archives officielles</p>
       <h1>Documentation institutionnelle</h1>
       <p class="sub">Textes, décrets et communications de la Présidence, du Gouvernement et des Mairies. Utilise la recherche ci-dessous pour retrouver un document rapidement.</p>
       <div class="nav-links">
-      <a href="pdf.html">📕 Les lois</a>
-      <a class="current" href="amendes.html">💲 Les amendes</a>
+        <a href="pdf.html">📕 Les lois</a>
+        <a class="current" href="amendes.html">💲 Les amendes</a>
+      </div>
     </div>
-    </div>
+    <div class="seal">A</div>
+  </div>
 </header>
 
 <div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Rechercher un document ou une catégorie…" oninput="onSearch(this.value)">
+  <input id="searchInput" type="text" placeholder="Rechercher un document ou une catégorie…" aria-label="Recherche de documents">
 </div>
 
 <div class="layout">
   <nav class="sidebar" id="sidebar" aria-label="Catégories de documents"></nav>
 
-  <section class="preview" id="preview">
+  <section class="preview" id="preview" aria-live="polite">
     <div class="preview-empty" id="previewEmpty">
-      <div class="seal" style="color:var(--gold-deep); border-color:var(--gold-deep);">?</div>
+      <div class="seal" style="color:var(--gold-deep);border-color:var(--gold-deep);">?</div>
       <p class="title">Aucun document sélectionné</p>
       <p class="text">Choisis un document dans le menu de gauche pour afficher son aperçu ici.</p>
     </div>
@@ -280,69 +143,18 @@ footer.site-footer { text-align: center; font-family: var(--font-mono); font-siz
 <footer class="site-footer">Panel maintenu à jour · dernière refonte — juillet 2026</footer>
 
 <script>
-/* ==========================================================================
-   DONNÉES DES DOCUMENTS
-   -------------------------------------------------------------------------
-   Pour AJOUTER un document : ajoute un objet dans le tableau "documents"
-   de la bonne catégorie, sur ce modèle :
-
-   {
-     title: "Titre du document",
-     dateLabel: "Juillet 2026",      // affiché tel quel
-     dateISO: "2026-07-01",          // sert uniquement au tri (plus récent en premier)
-     tag: "Décret",                  // court mot-clé affiché en haut à droite de l'aperçu
-     imageSrc: "img/mon-fichier.jpg",// chemin ou URL de l'image du document
-     link: "img/mon-fichier.jpg"     // lien "ouvrir dans un nouvel onglet" (souvent identique à imageSrc)
-   }
-
-   Pour AJOUTER une catégorie : ajoute un objet dans le tableau "panelData"
-   avec les mêmes clés que les catégories existantes (key, label, icon, documents).
-   ========================================================================== */
-
+/* Données des documents — modifier uniquement ce tableau pour ajouter du contenu */
 const panelData = [
-  {
-    key: 'mandatory',
-    label: 'Mandatory',
-    icon: '⚖️',
-    documents: [
-      {
-        title: 'Mandatory Reform',
-        dateLabel: 'Mars 2026',
-        dateISO: '2026-03-01',
-        tag: 'Réforme',
-        imageSrc: 'img/Mandatory_Reform.jpg',
-        link: 'img/Mandatory_Reform.jpg'
-      }
+  { key: 'mandatory', label: 'Mandatory', icon: '⚖️', documents: [
+      { title: 'Mandatory Reform', dateLabel: 'Mars 2026', dateISO: '2026-03-01', tag: 'Réforme', imageSrc: 'img/Mandatory_Reform.jpg', link: 'img/Mandatory_Reform.jpg' }
     ]
   },
-  {
-    key: 'presidence',
-    label: 'Présidence',
-    icon: '🗽',
-    documents: [
-      {
-        title: 'Liste officielle des représentants étatiques',
-        dateLabel: 'Novembre 2024',
-        dateISO: '2024-11-01',
-        tag: 'Liste officielle',
-        imageSrc: 'img/Presidence-etatique-nov24.png',
-        link: 'img/Presidence-etatique-nov24.png'
-      }
+  { key: 'presidence', label: 'Présidence', icon: '🗽', documents: [
+      { title: 'Liste officielle des représentants étatiques', dateLabel: 'Novembre 2024', dateISO: '2024-11-01', tag: 'Liste officielle', imageSrc: 'img/Presidence-etatique-nov24.png', link: 'img/Presidence-etatique-nov24.png' }
     ]
   },
-  {
-    key: 'gouvernement',
-    label: 'Gouvernement',
-    icon: '🏛️',
-    documents: [
-      {
-        title: 'Composition du Gouvernement',
-        dateLabel: 'Juillet 2026',
-        dateISO: '2026-07-01',
-        tag: 'Composition',
-        imageSrc: 'img/Equipe_Gouv_3.png',
-        link: 'img/Equipe_Gouv_3.png'
-      }
+  { key: 'gouvernement', label: 'Gouvernement', icon: '🏛️', documents: [
+      { title: 'Composition du Gouvernement', dateLabel: 'Juillet 2026', dateISO: '2026-07-01', tag: 'Composition', imageSrc: 'img/Equipe_Gouv_3.png', link: 'img/Equipe_Gouv_3.png' }
     ]
   },
   { key: 'los-santos', label: 'Mairie de Los Santos', icon: '🌴', documents: [] },
@@ -350,35 +162,30 @@ const panelData = [
   { key: 'paleto', label: 'Mairie de Paleto', icon: '🦫', documents: [] }
 ];
 
-/* ==========================================================================
-   MOTEUR DU PANEL — pas besoin de modifier ce qui suit pour ajouter du contenu
-   ========================================================================== */
-
+/* Moteur du panel optimisé */
 const sidebar = document.getElementById('sidebar');
 const preview = document.getElementById('preview');
+const searchInput = document.getElementById('searchInput');
 let activeButton = null;
 
 function renderSidebar(filterText = '') {
-  sidebar.innerHTML = '';
-  const q = filterText.trim().toLowerCase();
-
+  const q = String(filterText).trim().toLowerCase();
+  // Use a fragment to minimize reflows
+  const frag = document.createDocumentFragment();
   panelData.forEach(cat => {
-    const docs = [...cat.documents].sort((a, b) => b.dateISO.localeCompare(a.dateISO));
+    const docs = (cat.documents || []).slice().sort((a,b) => (b.dateISO || '').localeCompare(a.dateISO || ''));
     const matchesCategory = cat.label.toLowerCase().includes(q);
-    const filteredDocs = q === '' ? docs : docs.filter(d => matchesCategory || d.title.toLowerCase().includes(q));
+    const filteredDocs = q === '' ? docs : docs.filter(d => matchesCategory || (d.title || '').toLowerCase().includes(q));
 
     if (q !== '' && filteredDocs.length === 0 && !matchesCategory) return;
 
     const details = document.createElement('details');
     details.className = 'category';
-    details.open = q !== '' ? true : true; // ouvertes par défaut ; passe à false si tu préfères repliées
+    details.open = true; // ouvertes par défaut
 
     const summary = document.createElement('summary');
     summary.className = 'cat-head';
-    summary.innerHTML = `
-      <span class="cat-left">${cat.icon} ${cat.label} <span class="cat-count">${docs.length}</span></span>
-      <span class="chevron">›</span>
-    `;
+    summary.innerHTML = `<span class="cat-left">${cat.icon} ${cat.label} <span class="cat-count">${docs.length}</span></span><span class="chevron">›</span>`;
     details.appendChild(summary);
 
     const list = document.createElement('div');
@@ -394,42 +201,79 @@ function renderSidebar(filterText = '') {
         const btn = document.createElement('button');
         btn.className = 'doc-item';
         btn.type = 'button';
-        btn.innerHTML = `<span class="doc-title">${doc.title}</span><span class="doc-meta">${doc.tag} · ${doc.dateLabel}</span>`;
+        btn.innerHTML = `<span class="doc-title">${escapeHtml(doc.title)}</span><span class="doc-meta">${escapeHtml(doc.tag)} · ${escapeHtml(doc.dateLabel)}</span>`;
         btn.addEventListener('click', () => showDocument(doc, cat, btn));
         list.appendChild(btn);
       });
     }
 
     details.appendChild(list);
-    sidebar.appendChild(details);
+    frag.appendChild(details);
   });
+
+  // Replace content in one operation
+  sidebar.innerHTML = '';
+  sidebar.appendChild(frag);
 }
 
+/* Affiche le document dans la zone d'aperçu (création DOM, gestion d'erreur d'image) */
 function showDocument(doc, cat, btn) {
   if (activeButton) activeButton.classList.remove('active');
   btn.classList.add('active');
   activeButton = btn;
 
-  preview.innerHTML = `
-    <div class="preview-head">
-      <h2>${doc.title}</h2>
-      <span class="preview-tag">${cat.icon} ${cat.label}</span>
-    </div>
-    <div class="preview-body">
-      <img src="${doc.imageSrc}" alt="${doc.title}"
-           onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'img-missing', innerText:'Image introuvable : ' + this.getAttribute('src')}))">
-    </div>
-    <div class="preview-footer">
-      <span class="preview-ref">${doc.tag} · ${doc.dateLabel}</span>
-      <a href="${doc.link}" target="_blank" rel="noopener noreferrer">Ouvrir en plein écran ↗</a>
-    </div>
-  `;
+  // Clear preview and build DOM nodes
+  preview.innerHTML = '';
+
+  const head = document.createElement('div');
+  head.className = 'preview-head';
+  head.innerHTML = `<h2>${escapeHtml(doc.title)}</h2><span class="preview-tag">${cat.icon} ${escapeHtml(cat.label)}</span>`;
+
+  const body = document.createElement('div');
+  body.className = 'preview-body';
+
+  const img = document.createElement('img');
+  img.alt = doc.title || '';
+  img.src = doc.imageSrc || '';
+  img.addEventListener('error', function () {
+    const missing = document.createElement('div');
+    missing.className = 'img-missing';
+    missing.textContent = 'Image introuvable : ' + (this.getAttribute('src') || '');
+    this.replaceWith(missing);
+  });
+  body.appendChild(img);
+
+  const footer = document.createElement('div');
+  footer.className = 'preview-footer';
+  footer.innerHTML = `<span class="preview-ref">${escapeHtml(doc.tag)} · ${escapeHtml(doc.dateLabel)}</span>`;
+
+  const a = document.createElement('a');
+  a.href = doc.link || '#';
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.textContent = 'Ouvrir en plein écran ↗';
+  footer.appendChild(a);
+
+  preview.appendChild(head);
+  preview.appendChild(body);
+  preview.appendChild(footer);
 }
 
-function onSearch(value) {
-  renderSidebar(value);
+/* Small helper to avoid inserting raw HTML from data */
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>\"'`=\/]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','/':'&#47;','=':'&#61;'}[s]));
 }
 
+/* Wire up search without inline attributes, debounced for UX (small debounce) */
+let searchTimer = null;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    renderSidebar(e.target.value);
+  }, 120);
+});
+
+/* Initial render */
 renderSidebar();
 </script>
 
