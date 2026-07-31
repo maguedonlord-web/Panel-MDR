@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archives officielles — Calculateur d'amendes</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   CALCULATEUR D'AMENDES — fichier autonome (HTML + CSS + JS)
+   ========================================================================== */
+
+:root {
+  --navy: #1b2a4a;
+  --navy-deep: #0f1930;
+  --paper: #f6f1e7;
+  --paper-line: #e3d9c3;
+  --card: #fffdf8;
+  --card-border: #e6dcc7;
+  --gold: #a9822f;
+  --gold-deep: #7c5e1f;
+  --seal-red: #8c2f2f;
+  --green-success: #2e7d32;
+  --ink: #241f16;
+  --ink-soft: #6b6455;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  background-image: radial-gradient(circle at 1px 1px, var(--paper-line) 1px, transparent 0);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* ---------- En-tête ---------- */
+header { background: var(--navy); color: #f3ead9; padding: 28px 32px 24px; border-bottom: 4px solid var(--gold); }
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+.eyebrow { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #d8c187; margin: 0 0 8px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; margin: 0 0 8px; }
+header p.sub { margin: 0 0 12px; color: #c9d0dd; font-size: 14px; max-width: 560px; line-height: 1.5; }
+.nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav-links a {
+  font-family: var(--font-mono); font-size: 12px; color: #f3ead9; text-decoration: none;
+  border: 1px solid rgba(243,234,217,0.4); padding: 7px 12px; border-radius: 5px;
+}
+.nav-links a:hover, .nav-links a.current { border-color: var(--gold); color: var(--gold); }
+.seal { width: 62px; height: 62px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--font-display); font-size: 22px; color: var(--gold); }
+
+/* ---------- Mise en page ---------- */
+.layout { max-width: 1600px; margin: 0 auto; padding: 26px 32px 60px; display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+.panel-card { background: var(--card); border: 1.5px solid var(--card-border); border-radius: 8px; overflow: hidden; }
+.panel-head { padding: 14px 18px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.panel-head h2 { font-family: var(--font-display); font-size: 17px; margin: 0; color: var(--navy); }
+.reset-btn {
+  font-family: var(--font-mono); font-size: 11.5px; border: 1.5px solid var(--card-border); background: var(--paper);
+  color: var(--ink); padding: 6px 11px; border-radius: 5px; cursor: pointer;
+}
+.reset-btn:hover { border-color: var(--seal-red); color: var(--seal-red); }
+
+.select-count { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); padding: 10px 18px 0; display: flex; gap: 8px; align-items: center; }
+.select-count strong { color: var(--gold-deep); }
+.select-hint { color: var(--gold-deep); font-style: italic; opacity: 0.85; }
+
+/* ---------- Catégories & infractions ---------- */
+   /* Modification du conteneur pour afficher 4 colonnes */
+#categoriesContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 12px;
+}
+
+/* Ajustements pour que les catégories s'affichent bien en colonnes */
+.category {
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Gestion du responsive sur petits écrans */
+@media (max-width: 1100px) {
+  #categoriesContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  #categoriesContainer {
+    grid-template-columns: 1fr;
+  }
+}
+.category { border-bottom: 1px solid var(--card-border); }
+.category:last-child { border-bottom: none; }
+.category-head {
+  padding: 12px 18px; font-family: var(--font-display); font-weight: 700; font-size: 14.5px; color: var(--navy);
+  background: var(--paper);
+}
+.offense-list { padding: 6px 10px; }
+.offense-row { border-radius: 6px; padding: 9px 8px; }
+.offense-row:hover { background: var(--paper); }
+.offense-top { display: flex; align-items: flex-start; gap: 10px; }
+.offense-top input[type=checkbox] { margin-top: 3px; accent-color: var(--gold-deep); flex-shrink: 0; cursor: pointer; }
+.offense-label { flex: 1; }
+.offense-title { font-size: 13.5px; font-weight: 600; }
+.offense-range { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
+
+/* Disposition en 2 boîtes séparées */
+/* Empiler les contrôles sur 1 seule colonne dans les cartes */
+.offense-controls {
+  margin: 10px 0 2px 26px;
+  display: none;
+  grid-template-columns: 1fr; /* Passage de 1fr 1fr à 1fr */
+  gap: 8px;
+}
+.offense-row.checked .offense-controls { display: grid; }
+
+.box-option {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.box-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.multiplier-select {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid var(--card-border);
+  background: var(--paper);
+  color: var(--navy);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.custom-input {
+  width: 100%;
+  padding: 5px 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--navy);
+  box-sizing: border-box;
+}
+
+/* ---------- Résultat (colonne droite, sticky) ---------- */
+.result-card { position: sticky; top: 20px; }
+.result-card .panel-head h2 { color: var(--navy); }
+.result-summary { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 16px 18px; }
+.summary-metric { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 12px; border-radius: 6px; background: var(--paper); border: 1px solid var(--card-border); }
+.summary-metric-total { background: #fffaf0; border-color: var(--gold); }
+.summary-label { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
+.summary-value { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--navy); }
+.summary-metric-total .summary-value { color: var(--gold-deep); font-size: 24px; }
+
+.result-items { padding: 0 18px 16px; }
+.result-items .item-row { display: flex; justify-content: space-between; font-size: 12.5px; padding: 6px 0; border-bottom: 1px dashed var(--card-border); }
+.result-items .item-row:last-child { border-bottom: none; }
+.result-empty { padding: 30px 18px; text-align: center; color: var(--ink-soft); font-size: 13px; }
+
+.copy-container { padding: 0 18px 18px; }
+.copy-btn {
+  width: 100%;
+  padding: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--navy);
+  color: #f3ead9;
+  border: 1.5px solid var(--navy);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.copy-btn:hover { background: var(--navy-deep); border-color: var(--gold); color: var(--gold); }
+.copy-btn.copied { background: var(--green-success); border-color: var(--green-success); color: #fff; }
+
+footer.site-footer { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); padding: 10px 0 34px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <p class="eyebrow">Outil officiel</p>
+      <h1>Calculateur d'amendes</h1>
+      <p class="sub">Sélectionne les infractions. Pour chacune, applique un multiplicateur au montant légal ou saisis directement un montant personnalisé.</p>
+      <div class="nav-links">
+        <a href="index.html">💼 Documentations</a>
+        <a href="pdf.html">📕 Les lois</a>
+      </div>
+    </div>
+    <div class="seal">$</div>
+  </div>
+</header>
+
+<div class="layout">
+  <section class="panel-card">
+    <div class="panel-head">
+      <h2>Infractions</h2>
+      <button type="button" class="reset-btn" id="resetBtn">Réinitialiser</button>
+    </div>
+    <p class="select-count">
+      <span><strong id="selectedCount">0</strong> infraction(s) sélectionnée(s)</span>
+      <span class="select-hint">(Rappel : jusqu'à 3 recommandées)</span>
+    </p>
+    <div id="categoriesContainer"></div>
+  </section>
+
+  <section class="panel-card result-card">
+    <div class="panel-head"><h2>Résultat</h2></div>
+    <div class="result-summary">
+      <article class="summary-metric">
+        <span class="summary-label">Amende minimale</span>
+        <strong class="summary-value" id="resultMin">0 $</strong>
+      </article>
+      <article class="summary-metric summary-metric-total">
+        <span class="summary-label">Amende appliquée</span>
+        <strong class="summary-value" id="resultApplied">0 $</strong>
+      </article>
+      <article class="summary-metric">
+        <span class="summary-label">Amende maximale</span>
+        <strong class="summary-value" id="resultMax">0 $</strong>
+      </article>
+    </div>
+    <div id="resultItems" class="result-items">
+      <p class="result-empty">Aucune infraction sélectionnée.</p>
+    </div>
+
+    <!-- Bouton Copier-Coller -->
+    <div class="copy-container">
+      <button type="button" id="copyBtn" class="copy-btn">
+        📋 Copier le résultat
+      </button>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">Panel maintenu à jour · dernière refonte — juillet 2026</footer>
+
+<script>
+/* ==========================================================================
+   DONNÉES DES INFRACTIONS
+   ========================================================================== */
+
+const categories = [
+  {
+    key: 'cat1',
+    label: 'Catégorie 1',
+    offenses: [
+      { id: 'c1-Rappel-à-la-loi', title: "Rappel à la loi", min: 450, max: 1350 },
+      { id: 'c1-Infraction-circulation', title: "Infraction aux règles de circulation", min: 500, max: 1500 },
+      { id: 'c1-Permis-manquant', title: "Permis ou licence manquant", min: 600, max: 1800 },
+      { id: 'c1-Degradation-poubelle', title: "Dégradation/Destruction de Poubelle", min: 900, max: 2700 },
+      { id: 'c1-Participation-evenement-illegal', title: "Participation à un événement illégal", min: 900, max: 2700 },
+      { id: 'c1-Vol', title: "Vol", min: 1300, max: 3900 },
+      { id: 'c1-Trouble-ordre-public', title: "Trouble à l'ordre public", min: 1500, max: 4500 },
+      { id: 'c1-Insulte-outrage', title: "Insulte ou outrage", min: 2200, max: 6600 },
+      { id: 'c1-Commerce-illegal', title: "Commerce illégal", min: 2500, max: 7500 },
+      { id: 'c1-Intrusion-propriete-privee', title: "Intrusion illégale sur propriété privée", min: 2500, max: 7500 }
+    ]
+  },
+  {
+    key: 'cat2',
+    label: 'Catégorie 2',
+    offenses: [
+      { id: 'c2-Détention-d-objets-prohibés', title: 'Détention d\'objets prohibés', min: 1600, max: 4800 },
+      { id: 'c2-Extorsion', title: 'Extorsion', min: 1750, max: 5250 },
+      { id: 'c2-Dégradation-bien-public', title: 'Dégradation de bien public et/ou privé', min: 2300, max: 6900 },
+      { id: 'c2-Refus-obtemperer', title: 'Refus d\'obtempérer', min: 2500, max: 7500 },
+      { id: 'c2-Braconnage-cruaute-animal', title: 'Braconnage / Cruauté sur animal', min: 2500, max: 7500 },
+      { id: 'c2-Manquement-serment', title: 'Manquement aux obligations du Serment', min: 2500, max: 7500 },
+      { id: 'c2-Mise-en-danger-autrui', title: 'Mise en danger d\'autrui', min: 3000, max: 9000 },
+      { id: 'c2-Organisation-evenement-illegal', title: 'Organisation d\'événement illégal', min: 3200, max: 9600 },
+      { id: 'c2-Braquage-commerce-cambriolage', title: 'Braquage de commerce local/cambriolage', min: 3500, max: 10500 },
+      { id: 'c2-Port-arme-illegal', title: 'Port d\'arme illégal', min: 4000, max: 12000 },
+      { id: 'c2-Atteinte-integrite-morale-physique', title: 'Atteinte à l\'intégrité morale et/ou physique', min: 5000, max: 15000 },
+      { id: 'c2-Intrusion-propriete-publique', title: 'Intrusion illégale sur propriété publique', min: 5000, max: 15000 },
+      { id: 'c2-Trafic-stupefiants', title: 'Trafic de stupéfiants', min: 5500, max: 16500 },
+      { id: 'c2-Vol-aggrave', title: 'Vol aggravé', min: 10000, max: 30000 }
+    ]
+  },
+  {
+    key: 'cat3',
+    label: 'Catégorie 3',
+    offenses: [
+      { id: 'c3-divulgations-vol-infos', title: "Divulgations et/ou vol d'informations confidentielles", min: 6000, max: 18000 },
+      { id: 'c3-usurpation-identite', title: "Usurpation d'identité et/ou impersonation", min: 6000, max: 18000 },
+      { id: 'c3-diffamation', title: "Diffamation", min: 7000, max: 21000 },
+      { id: 'c3-atteinte-fonctionnement-entreprise', title: "Atteinte au bon fonctionnement d'une entreprise", min: 9000, max: 27000 },
+      { id: 'c3-tentative-corruption', title: "Tentative de corruption", min: 10000, max: 30000 },
+      { id: 'c3-atteinte-integrite-morale-armee', title: "Atteinte à l'intégrité morale armée", min: 12000, max: 36000 },
+      { id: 'c3-parjure-faux-temoignage', title: "Parjure ou faux témoignage", min: 12000, max: 36000 },
+      { id: 'c3-detention-materiel-militaire', title: "Détention de matériel militaire et/ou d'armement lourd prohibé", min: 13000, max: 39000 },
+      { id: 'c3-perturbation-tribunal', title: "Perturbation au sein d'un tribunal", min: 14000, max: 42000 },
+      { id: 'c3-cybercriminalite', title: "Cybercriminalité", min: 15000, max: 45000 },
+      { id: 'c3-trafic-contrebande', title: "Trafic et/ou contrebande", min: 15000, max: 45000 },
+      { id: 'c3-atteinte-integrite-physique-armee', title: "Atteinte à l'intégrité physique armée", min: 18000, max: 54000 },
+      { id: 'c3-menace-agent-public', title: "Menace ou atteinte contre agent public", min: 20000, max: 60000 },
+      { id: 'c3-braquage-plateforme-yacht', title: "Braquage à la plateforme pétrolière/Yacht", min: 20000, max: 60000 }
+    ]
+  },
+  {
+    key: 'cat4',
+    label: 'Catégorie 4',
+    offenses: [
+      { id: 'c4-corruption-chantage', title: "Corruption ou chantage", min: 25000, max: 75000 },
+      { id: 'c4-fraude-blanchiement', title: "Fraude/Blanchiement d'argent", min: 25000, max: 75000 },
+      { id: 'c4-enlevement-prise-otage', title: "Enlèvement ou prise d'otage", min: 25000, max: 75000 },
+      { id: 'c4-violation-serment', title: "Violation de serment", min: 30000, max: 90000 },
+      { id: 'c4-attaque-armee-aggravee', title: "Attaque à main armée aggravée", min: 40000, max: 120000 },
+      { id: 'c4-perturbation-san-andreas', title: "Perturbation de San Andreas", min: 40000, max: 120000 },
+      { id: 'c4-tentative-homicide', title: "Tentative d'homicide", min: 50000, max: 150000 },
+      { id: 'c4-homicide-involontaire', title: "Homicide involontaire", min: 75000, max: 225000 },
+      { id: 'c4-homicide-volontaire', title: "Homicide volontaire", min: 150000, max: 450000 },
+      { id: 'c4-mise-en-peril-infrastructures', title: "Mise en péril des infrastructures étatiques", min: 200000, max: 600000 },
+      { id: 'c4-mise-en-peril-representants', title: "Mise en péril des représentants étatiques", min: 250000, max: 750000 },
+      { id: 'c4-homicide-representant-etatique', title: "Homicide sur représentant étatique", min: 500000, max: 1500000 }
+    ]
+  }
+];
+
+/* ==========================================================================
+   MOTEUR DU CALCULATEUR
+   ========================================================================== */
+
+const state = {}; // { offenseId: { checked: bool, multiplier: number, customValue: string } }
+
+const container = document.getElementById('categoriesContainer');
+const selectedCountEl = document.getElementById('selectedCount');
+const copyBtn = document.getElementById('copyBtn');
+
+function allOffenses() {
+  return categories.flatMap(c => c.offenses);
+}
+
+function renderCategories() {
+  container.innerHTML = '';
+  categories.forEach(cat => {
+    const catDiv = document.createElement('div');
+    catDiv.className = 'category';
+    catDiv.innerHTML = `<div class="category-head">${cat.label}</div>`;
+
+    const listDiv = document.createElement('div');
+    listDiv.className = 'offense-list';
+
+    cat.offenses.forEach(off => {
+      if (!state[off.id]) {
+        state[off.id] = { checked: false, multiplier: 1, customValue: '' };
+      }
+
+      const row = document.createElement('div');
+      row.className = 'offense-row';
+      row.id = 'row-' + off.id;
+      row.innerHTML = `
+        <div class="offense-top">
+          <input type="checkbox" id="chk-${off.id}">
+          <div class="offense-label">
+            <div class="offense-title">${off.title}</div>
+            <div class="offense-range">Base : ${off.min} $ — ${off.max} $</div>
+          </div>
+        </div>
+        <div class="offense-controls">
+          <!-- Boîte 1 : Multiplicateur -->
+          <div class="box-option">
+            <span class="box-title">Multiplicateur (sur ${off.max} $)</span>
+            <select id="select-mult-${off.id}" class="multiplier-select">
+              <option value="1">X1 (${off.min} $)</option>
+              <option value="1.5">X1.5 (${off.min * 1.5} $)</option>
+              <option value="2">X2 (${off.min * 2} $)</option>
+              <option value="2.5">X2.5 (${off.min * 2.5} $)</option>
+              <option value="3">X3 (${off.max * 3} $)</option>
+              <option value="3.5">X3.5 (${off.min * 3.5} $)</option>
+              <option value="4">X4 (${off.min * 4} $)</option>
+              <option value="4.5">X4.5 (${off.min * 4.5} $)</option>
+              <option value="5">X5 (${off.min * 5} $)</option>
+              <option value="5.5">X5.5 (${off.min * 5.5} $)</option>
+              <option value="6">X6 (${off.min * 6} $)</option>
+            </select>
+          </div>
+
+          <!-- Boîte 2 : Montant Personnalisé -->
+          <div class="box-option">
+            <span class="box-title">Montant personnalisé</span>
+            <input type="number" id="custom-input-${off.id}" class="custom-input" placeholder="Saisir montant en $" value="${state[off.id].customValue}">
+          </div>
+        </div>
+      `;
+      listDiv.appendChild(row);
+
+      const checkbox = row.querySelector(`#chk-${off.id}`);
+      const selectMult = row.querySelector(`#select-mult-${off.id}`);
+      const customInput = row.querySelector(`#custom-input-${off.id}`);
+
+      selectMult.value = state[off.id].multiplier;
+
+      checkbox.addEventListener('change', () => {
+        state[off.id].checked = checkbox.checked;
+        row.classList.toggle('checked', checkbox.checked);
+        updateSelectedCount();
+        computeResult();
+      });
+
+      selectMult.addEventListener('change', () => {
+        state[off.id].multiplier = Number(selectMult.value);
+        computeResult();
+      });
+
+      customInput.addEventListener('input', () => {
+        state[off.id].customValue = customInput.value;
+        computeResult();
+      });
+    });
+
+    catDiv.appendChild(listDiv);
+    container.appendChild(catDiv);
+  });
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  const currentlyChecked = Object.values(state).filter(s => s.checked).length;
+  selectedCountEl.textContent = currentlyChecked;
+}
+
+function computeResult() {
+  const selected = allOffenses().filter(off => state[off.id].checked);
+
+  let minTotal = 0;
+  let maxTotal = 0;
+  let appliedTotal = 0;
+
+  selected.forEach(o => {
+    minTotal += o.min;
+    maxTotal += o.max;
+
+    const customVal = parseFloat(state[o.id].customValue);
+    if (!isNaN(customVal) && customVal >= 0 && state[o.id].customValue.trim() !== '') {
+      appliedTotal += customVal;
+    } else {
+      appliedTotal += o.max * state[o.id].multiplier;
+    }
+  });
+
+  document.getElementById('resultMin').textContent = minTotal.toLocaleString('fr-FR') + ' $';
+  document.getElementById('resultMax').textContent = maxTotal.toLocaleString('fr-FR') + ' $';
+  document.getElementById('resultApplied').textContent = appliedTotal.toLocaleString('fr-FR') + ' $';
+
+  const itemsEl = document.getElementById('resultItems');
+
+  if (selected.length === 0) {
+    itemsEl.innerHTML = '<p class="result-empty">Aucune infraction sélectionnée.</p>';
+    return;
+  }
+
+  itemsEl.innerHTML = selected.map(o => {
+    const customVal = parseFloat(state[o.id].customValue);
+    const hasCustom = !isNaN(customVal) && customVal >= 0 && state[o.id].customValue.trim() !== '';
+
+    if (hasCustom) {
+      return `
+        <div class="item-row">
+          <span>${o.title} (Perso)</span>
+          <span>${customVal.toLocaleString('fr-FR')} $</span>
+        </div>
+      `;
+    } else {
+      const totalItem = o.max * state[o.id].multiplier;
+      return `
+        <div class="item-row">
+          <span>${o.title}</span>
+          <span>${o.max} $ × ${state[o.id].multiplier} = ${totalItem.toLocaleString('fr-FR')} $</span>
+        </div>
+      `;
+    }
+  }).join('');
+}
+
+/* ==========================================================================
+   FONCTION COPIER DANS LE PRESSE-PAPIERS
+   ========================================================================== */
+
+copyBtn.addEventListener('click', () => {
+  const selected = allOffenses().filter(off => state[off.id].checked);
+
+  if (selected.length === 0) {
+    alert("Aucune infraction à copier.");
+    return;
+  }
+
+  let textToCopy = "AMENDES : \n";
+  let appliedTotal = 0;
+
+  selected.forEach(o => {
+    const customVal = parseFloat(state[o.id].customValue);
+    const hasCustom = !isNaN(customVal) && customVal >= 0 && state[o.id].customValue.trim() !== '';
+
+    if (hasCustom) {
+      appliedTotal += customVal;
+      textToCopy += `• ${o.title} : ${customVal.toLocaleString('fr-FR')} $ (Montant personnalisé)\n`;
+    } else {
+      const totalItem = o.max * state[o.id].multiplier;
+      appliedTotal += totalItem;
+      textToCopy += `• ${o.title} : ${totalItem.toLocaleString('fr-FR')} $\n`;
+    }
+  });
+
+  textToCopy += `\nTOTAL : ${appliedTotal.toLocaleString('fr-FR')} $**`;
+
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    copyBtn.classList.add('copied');
+    copyBtn.textContent = '✓ Copié !';
+    setTimeout(() => {
+      copyBtn.classList.remove('copied');
+      copyBtn.innerHTML = '📋 Copier le résultat';
+    }, 2000);
+  }).catch(err => {
+    console.error('Erreur lors de la copie :', err);
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  Object.keys(state).forEach(id => delete state[id]);
+  renderCategories();
+  computeResult();
+});
+
+renderCategories();
+computeResult();
+</script>
+
+</body>
+</html>
