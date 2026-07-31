@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel-MDR — redirection</title>
+  <meta http-equiv="refresh" content="0;url=./Pannel%20MDR/index.html">
+  <script>
+    // Fallback redirect for browsers that ignore meta refresh
+    (function(){
+      var url = './Pannel%20MDR/index.html';
+      if(window.location.pathname && window.location.pathname !== '/' && window.location.pathname.indexOf('Panel-MDR') === -1){
+        // leave existing paths alone
+      } else {
+        window.location.replace(url);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <p>Redirection vers le site… <a href="./Pannel%20MDR/index.html">Cliquez ici si vous n'êtes pas redirigé</a>.</p>
+</body>
+</html>
