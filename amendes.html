@@ -21,7 +21,6 @@
   --card-border: #e6dcc7;
   --gold: #a9822f;
   --gold-deep: #7c5e1f;
-  --seal-red: #8c2f2f;
   --green-success: #2e7d32;
   --ink: #241f16;
   --ink-soft: #6b6455;
@@ -43,7 +42,14 @@ body {
 
 /* ---------- En-tête ---------- */
 header { background: var(--navy); color: #f3ead9; padding: 28px 32px 24px; border-bottom: 4px solid var(--gold); }
-.header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+.header-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0;
+  display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+}
+.header-logo { width: 96px; height: 96px; object-fit: contain; flex-shrink: 0; }
+.header-text { flex: 1; min-width: 220px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.header-text .nav-links { justify-content: center; margin-top: 6px; }
+
 .eyebrow { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #d8c187; margin: 0 0 8px; }
 h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; margin: 0 0 8px; }
 header p.sub { margin: 0 0 12px; color: #c9d0dd; font-size: 14px; max-width: 560px; line-height: 1.5; }
@@ -53,7 +59,6 @@ header p.sub { margin: 0 0 12px; color: #c9d0dd; font-size: 14px; max-width: 560
   border: 1px solid rgba(243,234,217,0.4); padding: 7px 12px; border-radius: 5px;
 }
 .nav-links a:hover, .nav-links a.current { border-color: var(--gold); color: var(--gold); }
-.seal { width: 62px; height: 62px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--font-display); font-size: 22px; color: var(--gold); }
 
 /* ---------- Mise en page ---------- */
 .layout { max-width: 1600px; margin: 0 auto; padding: 26px 32px 60px; display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
@@ -222,7 +227,6 @@ footer.site-footer { text-align: center; font-family: var(--font-mono); font-siz
         <a href="pdf.html">📕 Les lois</a>
       </div>
     </div>
-    <div class="seal">$</div>
   </div>
 </header>
 
