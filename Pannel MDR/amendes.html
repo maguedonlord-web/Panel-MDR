@@ -56,7 +56,7 @@ header p.sub { margin: 0 0 12px; color: #c9d0dd; font-size: 14px; max-width: 560
 .seal { width: 62px; height: 62px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--font-display); font-size: 22px; color: var(--gold); font-weight: 700; }
 
 /* ---------- Mise en page ---------- */
-.layout { max-width: 1200px; margin: 0 auto; padding: 26px 32px 60px; display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
+.layout { max-width: 1600px; margin: 0 auto; padding: 26px 32px 60px; display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
 @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 
 .panel-card { background: var(--card); border: 1.5px solid var(--card-border); border-radius: 8px; overflow: hidden; }
@@ -73,6 +73,35 @@ header p.sub { margin: 0 0 12px; color: #c9d0dd; font-size: 14px; max-width: 560
 .select-hint { color: var(--gold-deep); font-style: italic; opacity: 0.85; }
 
 /* ---------- Catégories & infractions ---------- */
+   /* Modification du conteneur pour afficher 4 colonnes */
+#categoriesContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 12px;
+}
+
+/* Ajustements pour que les catégories s'affichent bien en colonnes */
+.category {
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Gestion du responsive sur petits écrans */
+@media (max-width: 1100px) {
+  #categoriesContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  #categoriesContainer {
+    grid-template-columns: 1fr;
+  }
+}
 .category { border-bottom: 1px solid var(--card-border); }
 .category:last-child { border-bottom: none; }
 .category-head {
@@ -89,8 +118,13 @@ header p.sub { margin: 0 0 12px; color: #c9d0dd; font-size: 14px; max-width: 560
 .offense-range { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
 
 /* Disposition en 2 boîtes séparées */
-.offense-controls { margin: 10px 0 2px 26px; display: none; grid-template-columns: 1fr 1fr; gap: 10px; }
-@media (max-width: 600px) { .offense-controls { grid-template-columns: 1fr; } }
+/* Empiler les contrôles sur 1 seule colonne dans les cartes */
+.offense-controls {
+  margin: 10px 0 2px 26px;
+  display: none;
+  grid-template-columns: 1fr; /* Passage de 1fr 1fr à 1fr */
+  gap: 8px;
+}
 .offense-row.checked .offense-controls { display: grid; }
 
 .box-option {
