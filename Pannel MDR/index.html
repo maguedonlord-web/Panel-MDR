@@ -65,6 +65,19 @@ header p.sub { margin: 0; color: #c9d0dd; font-size: 14px; max-width: 560px; lin
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   font-family: var(--font-display); font-size: 22px; color: var(--gold); font-weight: 700;
 }
+/* Alignement du logo et du texte côte à côte */
+.header-container {
+  display: flex;
+  align-items: center; /* Aligne verticalement le logo et le texte */
+  gap: 20px;           /* Espace entre le logo et le texte */
+}
+
+/* Ajustement de la taille du logo */
+.header-logo {
+  height: 80px;        /* Ajustez la hauteur souhaitée pour l'agrandir */
+  width: auto;         /* Conserve les proportions d'origine */
+  flex-shrink: 0;      /* Empêche le logo de se déformer si l'écran rétrécit */
+}
 
 /* ---------- Barre de recherche ---------- */
 .search-bar {
@@ -151,6 +164,12 @@ footer.site-footer { text-align: center; font-family: var(--font-mono); font-siz
 
 <header>
   <div class="header-inner">
+     <div class="header-container">
+    <img src="mandatory.png" alt="Logo" class="header-logo">
+    <div class="header-text">
+      <h1>Titre du site</h1>
+      <p>Sous-titre ou description</p>
+    </div>
     <div>
       <p class="eyebrow">Archives officielles</p>
       <h1>Documentation institutionnelle</h1>
