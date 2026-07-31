@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archives officielles — Documentation</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   PANEL DE DOCUMENTATION — fichier autonome (HTML + CSS + JS)
+   Pour ajouter / modifier un document : va directement à la section
+   "DONNÉES DES DOCUMENTS" tout en bas du <script>. Pas besoin de toucher
+   au reste du fichier.
+   ========================================================================== */
+
+:root {
+  --navy: #1b2a4a;
+  --navy-deep: #0f1930;
+  --paper: #f6f1e7;
+  --paper-line: #e3d9c3;
+  --card: #fffdf8;
+  --card-border: #e6dcc7;
+  --gold: #a9822f;
+  --gold-deep: #7c5e1f;
+  --seal-red: #8c2f2f;
+  --ink: #241f16;
+  --ink-soft: #6b6455;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  background-image: radial-gradient(circle at 1px 1px, var(--paper-line) 1px, transparent 0);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* ---------- En-tête ---------- */
+header {
+  background: var(--navy);
+  color: #f3ead9;
+  padding: 30px 32px 26px;
+  border-bottom: 4px solid var(--gold);
+}
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.eyebrow { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #d8c187; margin: 0 0 8px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 32px; margin: 0 0 8px; }
+header p.sub { margin: 0; color: #c9d0dd; font-size: 14px; max-width: 560px; line-height: 1.5; }
+.nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav-links a {
+  font-family: var(--font-mono); font-size: 12px; color: #f3ead9; text-decoration: none;
+  border: 1px solid rgba(243,234,217,0.4); padding: 7px 12px; border-radius: 5px;
+}
+.nav-links a:hover, .nav-links a.current { border-color: var(--gold); color: var(--gold); }
+.seal {
+  width: 62px; height: 62px; border: 2px solid var(--gold); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-family: var(--font-display); font-size: 22px; color: var(--gold); font-weight: 700;
+}
+
+/* ---------- Barre de recherche ---------- */
+.search-bar {
+  max-width: 1200px; margin: -20px auto 0; padding: 0 32px;
+  position: relative; z-index: 5;
+}
+.search-bar input {
+  width: 100%; padding: 13px 16px 13px 42px; border-radius: 6px; border: 1.5px solid var(--card-border);
+  background: var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="%236b6455" stroke-width="2"><circle cx="6.5" cy="6.5" r="5.5"/><line x1="10.5" y1="10.5" x2="15" y2="15"/></svg>') no-repeat 14px center;
+  font-family: var(--font-body); font-size: 14.5px; color: var(--ink);
+  box-shadow: 0 3px 10px rgba(27,42,74,0.12);
+}
+.search-bar input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+/* ---------- Mise en page principale ---------- */
+.layout {
+  max-width: 1200px; margin: 0 auto; padding: 26px 32px 60px;
+  display: grid; grid-template-columns: 300px 1fr; gap: 20px;
+}
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* ---------- Sidebar / catégories ---------- */
+.sidebar { display: flex; flex-direction: column; gap: 12px; }
+
+details.category {
+  background: var(--card); border: 1.5px solid var(--card-border); border-radius: 8px; overflow: hidden;
+}
+details.category[open] summary { border-bottom: 1px solid var(--card-border); }
+summary.cat-head {
+  list-style: none; cursor: pointer; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--navy);
+}
+summary.cat-head::-webkit-details-marker { display: none; }
+.cat-head .cat-left { display: flex; align-items: center; gap: 10px; }
+.cat-count { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); background: var(--paper); padding: 1px 7px; border-radius: 10px; }
+.chevron { transition: transform 0.15s ease; color: var(--gold-deep); }
+details[open] .chevron { transform: rotate(90deg); }
+
+.doc-list { padding: 4px; }
+.doc-item {
+  width: 100%; text-align: left; background: transparent; border: none; border-radius: 6px;
+  padding: 9px 10px; cursor: pointer; display: flex; flex-direction: column; gap: 2px;
+}
+.doc-item:hover, .doc-item.active { background: var(--paper); }
+.doc-item.active { box-shadow: inset 3px 0 0 var(--gold); }
+.doc-title { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.doc-meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-soft); }
+.doc-empty { padding: 14px 10px; font-size: 12.5px; color: var(--ink-soft); font-style: italic; }
+
+/* ---------- Zone d'aperçu ---------- */
+.preview {
+  background: var(--card); border: 1.5px solid var(--card-border); border-radius: 8px;
+  min-height: 520px; display: flex; flex-direction: column; overflow: hidden;
+}
+.preview-head { padding: 16px 20px; border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.preview-head h2 { font-family: var(--font-display); font-size: 19px; margin: 0; color: var(--navy); }
+.preview-tag {
+  font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--gold-deep); border: 1px solid var(--gold); padding: 3px 9px; border-radius: 3px;
+}
+.preview-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.preview-body img { max-width: 100%; max-height: 560px; border-radius: 4px; box-shadow: 0 4px 18px rgba(27,42,74,0.14); }
+.preview-footer { padding: 12px 20px; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; }
+.preview-footer a { font-family: var(--font-mono); font-size: 12px; color: var(--navy); text-decoration: none; }
+.preview-footer a:hover { text-decoration: underline; }
+.preview-ref { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
+
+.preview-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; color: var(--ink-soft); padding: 40px; }
+.preview-empty .seal { margin-bottom: 6px; }
+.preview-empty p.title { font-family: var(--font-display); font-size: 17px; color: var(--navy); margin: 0; }
+.preview-empty p.text { font-size: 13px; max-width: 320px; margin: 0; }
+
+.img-missing {
+  font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); text-align: center;
+  border: 1px dashed var(--card-border); padding: 30px 20px; border-radius: 6px; max-width: 340px;
+}
+
+footer.site-footer { text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); padding: 10px 0 34px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <p class="eyebrow">Archives officielles</p>
+      <h1>Documentation institutionnelle</h1>
+      <p class="sub">Textes, décrets et communications de la Présidence, du Gouvernement et des Mairies. Utilise la recherche ci-dessous pour retrouver un document rapidement.</p>
+      <div class="nav-links">
+      <a href="pdf.html">📕 Les lois</a>
+      <a class="current" href="amendes.html">💲 Les amendes</a>
+    </div>
+    </div>
+    <div class="seal">A</div>
+  </div>
+</header>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Rechercher un document ou une catégorie…" oninput="onSearch(this.value)">
+</div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Catégories de documents"></nav>
+
+  <section class="preview" id="preview">
+    <div class="preview-empty" id="previewEmpty">
+      <div class="seal" style="color:var(--gold-deep); border-color:var(--gold-deep);">?</div>
+      <p class="title">Aucun document sélectionné</p>
+      <p class="text">Choisis un document dans le menu de gauche pour afficher son aperçu ici.</p>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">Panel maintenu à jour · dernière refonte — juillet 2026</footer>
+
+<script>
+/* ==========================================================================
+   DONNÉES DES DOCUMENTS
+   -------------------------------------------------------------------------
+   Pour AJOUTER un document : ajoute un objet dans le tableau "documents"
+   de la bonne catégorie, sur ce modèle :
+
+   {
+     title: "Titre du document",
+     dateLabel: "Juillet 2026",      // affiché tel quel
+     dateISO: "2026-07-01",          // sert uniquement au tri (plus récent en premier)
+     tag: "Décret",                  // court mot-clé affiché en haut à droite de l'aperçu
+     imageSrc: "img/mon-fichier.jpg",// chemin ou URL de l'image du document
+     link: "img/mon-fichier.jpg"     // lien "ouvrir dans un nouvel onglet" (souvent identique à imageSrc)
+   }
+
+   Pour AJOUTER une catégorie : ajoute un objet dans le tableau "panelData"
+   avec les mêmes clés que les catégories existantes (key, label, icon, documents).
+   ========================================================================== */
+
+const panelData = [
+  {
+    key: 'mandatory',
+    label: 'Mandatory',
+    icon: '⚖️',
+    documents: [
+      {
+        title: 'Mandatory Reform',
+        dateLabel: 'Mars 2026',
+        dateISO: '2026-03-01',
+        tag: 'Réforme',
+        imageSrc: 'img/Mandatory_Reform.jpg',
+        link: 'img/Mandatory_Reform.jpg'
+      }
+    ]
+  },
+  {
+    key: 'presidence',
+    label: 'Présidence',
+    icon: '🗽',
+    documents: [
+      {
+        title: 'Liste officielle des représentants étatiques',
+        dateLabel: 'Novembre 2024',
+        dateISO: '2024-11-01',
+        tag: 'Liste officielle',
+        imageSrc: 'img/Presidence-etatique-nov24.png',
+        link: 'img/Presidence-etatique-nov24.png'
+      }
+    ]
+  },
+  {
+    key: 'gouvernement',
+    label: 'Gouvernement',
+    icon: '🏛️',
+    documents: [
+      {
+        title: 'Composition du Gouvernement',
+        dateLabel: 'Juillet 2026',
+        dateISO: '2026-07-01',
+        tag: 'Composition',
+        imageSrc: 'img/Equipe_Gouv_3.png',
+        link: 'img/Equipe_Gouv_3.png'
+      }
+    ]
+  },
+  { key: 'los-santos', label: 'Mairie de Los Santos', icon: '🌴', documents: [] },
+  { key: 'sandy-shores', label: 'Mairie de Sandy Shores', icon: '🌵', documents: [] },
+  { key: 'paleto', label: 'Mairie de Paleto', icon: '🦫', documents: [] }
+];
+
+/* ==========================================================================
+   MOTEUR DU PANEL — pas besoin de modifier ce qui suit pour ajouter du contenu
+   ========================================================================== */
+
+const sidebar = document.getElementById('sidebar');
+const preview = document.getElementById('preview');
+let activeButton = null;
+
+function renderSidebar(filterText = '') {
+  sidebar.innerHTML = '';
+  const q = filterText.trim().toLowerCase();
+
+  panelData.forEach(cat => {
+    const docs = [...cat.documents].sort((a, b) => b.dateISO.localeCompare(a.dateISO));
+    const matchesCategory = cat.label.toLowerCase().includes(q);
+    const filteredDocs = q === '' ? docs : docs.filter(d => matchesCategory || d.title.toLowerCase().includes(q));
+
+    if (q !== '' && filteredDocs.length === 0 && !matchesCategory) return;
+
+    const details = document.createElement('details');
+    details.className = 'category';
+    details.open = q !== '' ? true : true; // ouvertes par défaut ; passe à false si tu préfères repliées
+
+    const summary = document.createElement('summary');
+    summary.className = 'cat-head';
+    summary.innerHTML = `
+      <span class="cat-left">${cat.icon} ${cat.label} <span class="cat-count">${docs.length}</span></span>
+      <span class="chevron">›</span>
+    `;
+    details.appendChild(summary);
+
+    const list = document.createElement('div');
+    list.className = 'doc-list';
+
+    if (filteredDocs.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'doc-empty';
+      empty.textContent = 'Aucun document pour le moment.';
+      list.appendChild(empty);
+    } else {
+      filteredDocs.forEach(doc => {
+        const btn = document.createElement('button');
+        btn.className = 'doc-item';
+        btn.type = 'button';
+        btn.innerHTML = `<span class="doc-title">${doc.title}</span><span class="doc-meta">${doc.tag} · ${doc.dateLabel}</span>`;
+        btn.addEventListener('click', () => showDocument(doc, cat, btn));
+        list.appendChild(btn);
+      });
+    }
+
+    details.appendChild(list);
+    sidebar.appendChild(details);
+  });
+}
+
+function showDocument(doc, cat, btn) {
+  if (activeButton) activeButton.classList.remove('active');
+  btn.classList.add('active');
+  activeButton = btn;
+
+  preview.innerHTML = `
+    <div class="preview-head">
+      <h2>${doc.title}</h2>
+      <span class="preview-tag">${cat.icon} ${cat.label}</span>
+    </div>
+    <div class="preview-body">
+      <img src="${doc.imageSrc}" alt="${doc.title}"
+           onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'img-missing', innerText:'Image introuvable : ' + this.getAttribute('src')}))">
+    </div>
+    <div class="preview-footer">
+      <span class="preview-ref">${doc.tag} · ${doc.dateLabel}</span>
+      <a href="${doc.link}" target="_blank" rel="noopener noreferrer">Ouvrir en plein écran ↗</a>
+    </div>
+  `;
+}
+
+function onSearch(value) {
+  renderSidebar(value);
+}
+
+renderSidebar();
+</script>
+
+</body>
+</html>
