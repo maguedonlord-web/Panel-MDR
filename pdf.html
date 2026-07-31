@@ -55,8 +55,8 @@ header {
 .header-logo { width: 96px; height: 96px; object-fit: contain; flex-shrink: 0; }
 .header-text { flex: 1; min-width: 220px; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .header-text .nav-links { justify-content: center; margin-top: 6px; }
-.header-titles .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #d8c187; margin: 0 0 4px; }
-.header-titles h1 { font-family: var(--font-display); font-weight: 700; font-size: 24px; margin: 0; }
+.header-text { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #d8c187; margin: 0 0 4px; }
+.header-text h1 { font-family: var(--font-display); font-weight: 700; font-size: 24px; margin: 0; }
 
 .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
 .nav-links a {
@@ -137,15 +137,16 @@ header {
 
 <header>
 <div class="header-inner">
-    <div class="header-titles">
-      <p class="eyebrow">Mandatory</p>
-      <h1>Textes de Loi</h1>
-      <div class="nav-links">
-        <a href="index.html">💼 Documentations</a>
-        <a href="amendes.html">💲 Les amendes</a>
-      </div>
+  <img class="header-logo" src="img/mandatory.png" alt="Logo Mandatory">
+  <div class="header-text">
+    <p class="eyebrow">Archives officielles</p>
+    <h1>Visionneuse de documents</h1>
+    <div class="nav-links">
+      <a href="index.html">💼 Documentations</a>
+      <a href="amendes.html">💲 Les amendes</a>
     </div>
   </div>
+</div>
 </header>
 
 <div class="layout">
