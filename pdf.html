@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archives officielles — Visionneuse de documents</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<style>
+/* ==========================================================================
+   VISIONNEUSE PDF — fichier autonome (HTML + CSS + JS), basé sur PDF.js
+   Pour ajouter un PDF à la liste : va à la section "LISTE DES PDF" dans le
+   <script>, tout en bas de ce fichier.
+   ========================================================================== */
+
+:root {
+  --navy: #1b2a4a;
+  --navy-deep: #0f1930;
+  --paper: #f6f1e7;
+  --paper-line: #e3d9c3;
+  --card: #fffdf8;
+  --card-border: #e6dcc7;
+  --gold: #a9822f;
+  --gold-deep: #7c5e1f;
+  --seal-red: #8c2f2f;
+  --mark: #f3d98a;
+  --mark-active: #d9932c;
+  --ink: #241f16;
+  --ink-soft: #6b6455;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  background-image: radial-gradient(circle at 1px 1px, var(--paper-line) 1px, transparent 0);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* ---------- En-tête ---------- */
+header {
+  background: var(--navy); color: #f3ead9; padding: 22px 32px; border-bottom: 4px solid var(--gold);
+}
+.header-inner { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.header-titles .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #d8c187; margin: 0 0 4px; }
+.header-titles h1 { font-family: var(--font-display); font-weight: 700; font-size: 24px; margin: 0; }
+.nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav-links a {
+  font-family: var(--font-mono); font-size: 12px; color: #f3ead9; text-decoration: none;
+  border: 1px solid rgba(243,234,217,0.4); padding: 7px 12px; border-radius: 5px;
+}
+.nav-links a:hover, .nav-links a.current { border-color: var(--gold); color: var(--gold); }
+
+/* ---------- Barre de recherche ---------- */
+.search-card {
+  background: var(--card); border: 1.5px solid var(--card-border); border-radius: 7px;
+  padding: 10px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px;
+}
+.search-input-compact {
+  width: 100%; padding: 8px 10px 8px 30px; border-radius: 5px; border: 1.5px solid var(--card-border);
+  background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="%236b6455" stroke-width="2"><circle cx="6.5" cy="6.5" r="5.5"/><line x1="10" y1="10" x2="14" y2="14"/></svg>') left 8px center no-repeat;
+  font-family: var(--font-body); font-size: 12.5px; color: var(--ink);
+}
+.search-input-compact:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+.search-nav { display: flex; align-items: center; justify-content: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
+.search-nav button {
+  width: 26px; height: 26px; border-radius: 4px; border: 1.5px solid var(--card-border); background: var(--card);
+  cursor: pointer; font-size: 12px; color: var(--navy); display: flex; align-items: center; justify-content: center;
+}
+.search-nav button:disabled { opacity: 0.35; cursor: default; }
+.search-nav button:not(:disabled):hover { border-color: var(--gold); }
+.search-count { min-width: 50px; text-align: center; }
+
+/* ---------- Mise en page principale ---------- */
+.layout {
+  max-width: 1300px; margin: 0 auto; padding: 18px 32px 60px;
+  display: grid; grid-template-columns: 260px 1fr; gap: 20px;
+}
+@media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+
+.sidebar { display: flex; flex-direction: column; gap: 8px; }
+.sidebar-label { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); margin: 2px 0 4px; }
+.pdf-item {
+  text-align: left; background: var(--card); border: 1.5px solid var(--card-border); border-radius: 7px;
+  padding: 11px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 3px;
+}
+.pdf-item:hover { border-color: var(--gold); }
+.pdf-item.active { border-color: var(--gold); box-shadow: inset 3px 0 0 var(--gold); background: #fffaf0; }
+.pdf-item .title { font-weight: 600; font-size: 13.5px; }
+.pdf-item .meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-soft); }
+
+/* ---------- Zone visionneuse ---------- */
+.viewer-shell {
+  background: var(--card); border: 1.5px solid var(--card-border); border-radius: 8px; overflow: hidden;
+  display: flex; flex-direction: column; min-height: 70vh;
+}
+.viewer-status {
+  padding: 10px 16px; border-bottom: 1px solid var(--card-border); font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft);
+  display: flex; justify-content: space-between; align-items: center;
+}
+#viewerPages {
+  flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 18px;
+  background: #efe9db;
+}
+.page-wrap { position: relative; box-shadow: 0 3px 14px rgba(27,42,74,0.18); background: #fff; }
+.page-wrap canvas { display: block; }
+.textLayer {
+  position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; opacity: 0.9; line-height: 1;
+}
+.textLayer span { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0% 0%; }
+.textLayer mark { background: var(--mark); color: transparent; }
+.textLayer mark.active-hit { background: var(--mark-active); }
+.page-number-tag {
+  position: absolute; top: 6px; right: 6px; background: var(--navy); color: #f3ead9; font-family: var(--font-mono);
+  font-size: 10px; padding: 2px 7px; border-radius: 3px; opacity: 0.85;
+}
+
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; gap: 10px; color: var(--ink-soft); text-align: center; padding: 20px; }
+.empty-state .seal { width: 54px; height: 54px; border: 2px solid var(--gold-deep); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; }
+.empty-state p.title { font-family: var(--font-display); font-size: 16px; color: var(--navy); margin: 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-titles">
+      <p class="eyebrow">Archives officielles</p>
+      <h1>Visionneuse de documents</h1>
+    <div class="nav-links">
+      <a href="index.html">💼 Documentations</a>
+      <a class="current" href="amendes.html">💲 Les amendes</a>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Liste des PDF">
+    <div class="search-card">
+      <input type="text" id="searchInput" class="search-input-compact" placeholder="Rechercher un mot…" oninput="onSearchInput(this.value)" onkeydown="if(event.key==='Enter'){ event.shiftKey ? goToMatch(-1) : goToMatch(1); event.preventDefault(); }">
+      <div class="search-nav">
+        <button id="prevBtn" onclick="goToMatch(-1)" title="Occurrence précédente">↑</button>
+        <span class="search-count" id="searchCount">—</span>
+        <button id="nextBtn" onclick="goToMatch(1)" title="Occurrence suivante">↓</button>
+      </div>
+    </div>
+    <p class="sidebar-label">Documents PDF</p>
+    <div id="pdfList"></div>
+  </nav>
+  <!-- ↑ le </nav> doit être ICI, juste après pdfList -->
+
+  <section class="viewer-shell">
+    <div class="viewer-status" id="viewerStatus">Choisis un document dans la liste de gauche.</div>
+    <div id="viewerPages">
+      <div class="empty-state" id="emptyState">
+        <div class="seal">?</div>
+        <p class="title">Aucun document ouvert</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ==========================================================================
+   LISTE DES PDF
+   -------------------------------------------------------------------------
+   Pour ajouter un document : ajoute un objet dans le tableau "pdfList",
+   avec le chemin du fichier PDF (dans le même dossier que cette page,
+   ou une URL). "file" est le seul champ obligatoire.
+   ========================================================================== */
+
+const pdfList = [
+  {
+    title: 'Article de lois — 07/07/2026',
+    dateLabel: '7 juillet 2026',
+    tag: 'Loi',
+    file: 'lois.pdf'
+  }
+];
+
+/* ==========================================================================
+   MOTEUR DE LA VISIONNEUSE — PDF.js
+   ========================================================================== */
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+const viewerPages = document.getElementById('viewerPages');
+const viewerStatus = document.getElementById('viewerStatus');
+const pdfListEl = document.getElementById('pdfList');
+
+let matches = [];
+let matchIndex = -1;
+let searchDebounce = null;
+
+function renderSidebar() {
+  pdfListEl.innerHTML = '';
+  pdfList.forEach((doc, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pdf-item';
+    btn.innerHTML = `<span class="title">${doc.title}</span><span class="meta">${doc.tag} · ${doc.dateLabel}</span>`;
+    btn.addEventListener('click', () => openPdf(doc, btn));
+    pdfListEl.appendChild(btn);
+  });
+}
+
+async function openPdf(doc, btn) {
+  document.querySelectorAll('.pdf-item.active').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+
+  clearSearch();
+  viewerPages.innerHTML = '';
+  viewerStatus.textContent = `Chargement de « ${doc.title} »…`;
+
+  try {
+    const loadingTask = pdfjsLib.getDocument(doc.file);
+    const pdf = await loadingTask.promise;
+    viewerStatus.textContent = `${doc.title} — ${pdf.numPages} page${pdf.numPages > 1 ? 's' : ''}`;
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const unscaledViewport = page.getViewport({ scale: 1 });
+      const availableWidth = viewerPages.clientWidth - 40; // 40 = marge intérieure
+      const scale = Math.min(availableWidth / unscaledViewport.width, 1.5);
+      const viewport = page.getViewport({ scale });
+
+      const wrap = document.createElement('div');
+      wrap.className = 'page-wrap';
+      wrap.style.width = viewport.width + 'px';
+      wrap.style.height = viewport.height + 'px';
+
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      wrap.appendChild(canvas);
+
+      const textLayerDiv = document.createElement('div');
+      textLayerDiv.className = 'textLayer';
+      textLayerDiv.style.width = viewport.width + 'px';
+      textLayerDiv.style.height = viewport.height + 'px';
+      wrap.appendChild(textLayerDiv);
+
+      const pageTag = document.createElement('span');
+      pageTag.className = 'page-number-tag';
+      pageTag.textContent = 'Page ' + pageNum;
+      wrap.appendChild(pageTag);
+
+      viewerPages.appendChild(wrap);
+
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      const textContent = await page.getTextContent();
+      pdfjsLib.renderTextLayer({
+        textContent,
+        container: textLayerDiv,
+        viewport,
+        textDivs: []
+      });
+    }
+  } catch (err) {
+    viewerStatus.textContent = 'Impossible de charger ce PDF : ' + err.message;
+    console.error(err);
+  }
+}
+
+/* ---------- Recherche dans le texte ---------- */
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&');
+}
+
+function clearSearch() {
+  document.querySelectorAll('.textLayer mark').forEach(mark => {
+    const parent = mark.parentNode;
+    parent.replaceChild(document.createTextNode(mark.textContent), mark);
+    parent.normalize();
+  });
+  matches = [];
+  matchIndex = -1;
+  updateSearchCount();
+}
+
+function onSearchInput(value) {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => runSearch(value.trim()), 250);
+}
+
+function runSearch(query) {
+  clearSearch();
+  if (!query) return;
+
+  const spans = document.querySelectorAll('.textLayer span');
+  const re = new RegExp(escapeRegExp(query), 'gi');
+
+  spans.forEach(span => {
+    const text = span.textContent;
+    if (!re.test(text)) return;
+    re.lastIndex = 0;
+
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
+      const mark = document.createElement('mark');
+      mark.textContent = m[0];
+      frag.appendChild(mark);
+      matches.push(mark);
+      lastIndex = m.index + m[0].length;
+      if (m[0].length === 0) re.lastIndex++;
+    }
+    if (lastIndex < text.length) frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    span.textContent = '';
+    span.appendChild(frag);
+  });
+
+  matchIndex = matches.length ? 0 : -1;
+  highlightActiveMatch();
+  updateSearchCount();
+}
+
+function goToMatch(dir) {
+  if (matches.length === 0) return;
+  if (matchIndex >= 0) matches[matchIndex].classList.remove('active-hit');
+  matchIndex = (matchIndex + dir + matches.length) % matches.length;
+  highlightActiveMatch();
+  updateSearchCount();
+}
+
+function highlightActiveMatch() {
+  if (matchIndex < 0 || !matches[matchIndex]) return;
+  matches[matchIndex].classList.add('active-hit');
+  matches[matchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function updateSearchCount() {
+  const countEl = document.getElementById('searchCount');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  if (matches.length === 0) {
+    countEl.textContent = '—';
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+  } else {
+    countEl.textContent = `${matchIndex + 1} / ${matches.length}`;
+    prevBtn.disabled = false;
+    nextBtn.disabled = false;
+  }
+}
+
+renderSidebar();
+// Ouvre automatiquement le premier document au chargement de la page
+if (pdfList.length) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const firstBtn = pdfListEl.querySelector('.pdf-item');
+    if (firstBtn) firstBtn.click();
+  });
+}
+</script>
+
+</body>
+</html>
