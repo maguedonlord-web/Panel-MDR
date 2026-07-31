@@ -260,17 +260,60 @@ const categories = [
   },
   {
     key: 'cat2',
-    label: 'Catégorie 2 — Infractions modérées',
+    label: 'Catégorie 2',
     offenses: [
-      { id: 'c2-conduite-dangereuse', title: 'Conduite dangereuse', min: 300, max: 800 },
-      { id: 'c2-refus-controle', title: 'Refus de contrôle', min: 400, max: 1000 }
+      { id: 'c2-Détention-d-objets-prohibés', title: 'Détention d\'objets prohibés', min: 1600, max: 4800 },
+      { id: 'c2-Extorsion', title: 'Extorsion', min: 1750, max: 5250 },
+      { id: 'c2-Dégradation-bien-public', title: 'Dégradation de bien public et/ou privé', min: 2300, max: 6900 },
+      { id: 'c2-Refus-obtemperer', title: 'Refus d\'obtempérer', min: 2500, max: 7500 },
+      { id: 'c2-Braconnage-cruaute-animal', title: 'Braconnage / Cruauté sur animal', min: 2500, max: 7500 },
+      { id: 'c2-Manquement-serment', title: 'Manquement aux obligations du Serment', min: 2500, max: 7500 },
+      { id: 'c2-Mise-en-danger-autrui', title: 'Mise en danger d\'autrui', min: 3000, max: 9000 },
+      { id: 'c2-Organisation-evenement-illegal', title: 'Organisation d\'événement illégal', min: 3200, max: 9600 },
+      { id: 'c2-Braquage-commerce-cambriolage', title: 'Braquage de commerce local/cambriolage', min: 3500, max: 10500 },
+      { id: 'c2-Port-arme-illegal', title: 'Port d\'arme illégal', min: 4000, max: 12000 },
+      { id: 'c2-Atteinte-integrite-morale-physique', title: 'Atteinte à l\'intégrité morale et/ou physique', min: 5000, max: 15000 },
+      { id: 'c2-Intrusion-propriete-publique', title: 'Intrusion illégale sur propriété publique', min: 5000, max: 15000 },
+      { id: 'c2-Trafic-stupefiants', title: 'Trafic de stupéfiants', min: 5500, max: 16500 },
+      { id: 'c2-Vol-aggrave', title: 'Vol aggravé', min: 10000, max: 30000 }
     ]
   },
   {
     key: 'cat3',
-    label: 'Catégorie 3 — Infractions graves',
+    label: 'Catégorie 3',
     offenses: [
-      { id: 'c3-port-arme', title: "Port d'arme sans PPA valide", min: 800, max: 2000 }
+      { id: 'c3- Divulgations-et/ou-vold-informations-confidentielles', title: " Divulgations et/ou vol d'informations confidentielles", min: 6000, max: 18000 },
+      { id: 'c3- Usurpation-d-identité-et/ou-impersonation', title: " Usurpation d'identité et/ou impersonation", min: 6000, max: 18000 },
+      { id: 'c3- diffamation', title: " Diffamation", min: 7000, max: 21000 },
+      { id: 'c3- Atteinte au bon fonctionnement-d-une-entreprise', title: " Atteinte au bon fonctionnement d'une entreprise", min: 9000, max: 27000 },
+      { id: 'c3- Tentative-de-corruption', title: " Tentative de corruption", min: 10000, max: 30000 },
+      { id: 'c3- Atteinte à l-intégrité-morale-armée', title: " Atteinte à l'intégrité morale armée", min: 12000, max: 36000 },
+      { id: 'c3- Parjure-ou-faux-témoignage', title: " Parjure ou faux témoignage", min: 12000, max: 36000 },
+      { id: 'c3- Détention-de-matériel-militaire-et/ou-d-armement-lourd-prohibé', title: " Détention de matériel militaire et/ou d'armement lourd prohibé", min: 13000, max: 39000 },
+      { id: 'c3- Perturbation-au-sein-d-un-tribunal', title: " Perturbation au sein d'un tribunal", min: 14000, max: 42000 },
+      { id: 'c3- Cybercriminalité', title: " Cybercriminalité", min: 15000, max: 45000 },
+      { id: 'c3- Trafic-et/ou-contrebande', title: " Trafic et/ou contrebande", min: 15000, max: 45000 },
+      { id: 'c3- Atteinte à l-intégrité-physique-armée', title: " Atteinte à l'intégrité physique armée", min: 18000, max: 54000 },
+      { id: 'c3- Menace-ou-atteinte-contre-agent-public', title: " Menace ou atteinte contre agent public", min: 20000, max: 60000 },
+      { id: 'c3- Braquage-à-la-plateforme-pétrolière/Yacht', title: " Braquage à la plateforme pétrolière/Yacht", min: 20000, max: 60000 }
+    ]
+  },
+  {
+    key: 'cat4',
+    label: 'Catégorie 4',
+    offenses: [
+      { id: 'c4- Corruption ou chantage', title: " Corruption ou chantage", min: 25000, max: 75000 },
+      { id: 'c4- Fraude/Blanchiement-d-argent', title: " Fraude/Blanchiement d'argent", min: 25000, max: 75000 },
+      { id: 'c4- Enlèvement-ou-prise-dotage', title: " Enlèvement ou prise d'otage", min: 25000, max: 75000 },
+      { id: 'c4- Violation-de-serment', title: " Violation de serment", min: 30000, max: 90000 },
+      { id: 'c4- Attaque-à-main-armée-aggravée', title: " Attaque à main armée aggravée", min: 40000, max: 120000 },
+      { id: 'c4- Perturbation-de-San-Andreas', title: " Perturbation de San Andreas", min: 40000, max: 120000 },
+      { id: 'c4- Tentative-d-homicide', title: " Tentative d'homicide", min: 50000, max: 150000 },
+      { id: 'c4- Homicide-involontaire', title: " Homicide involontaire", min: 75000, max: 225000 },
+      { id: 'c4- Homicide-volontaire', title: " Homicide volontaire", min: 150000, max: 450000 },
+      { id: 'c4- Mise-en-péril-des-infrastructures-étatiques', title: " Mise en péril des infrastructures étatiques", min: 200000, max: 600000 },
+      { id: 'c4- Mise-en-péril-des-représentants-étatiques', title: " Mise en péril des représentants étatiques", min: 250000, max: 750000 },
+      { id: 'c4- Homicide-sur-représentant-étatique', title: " Homicide sur représentant étatique", min: 500000, max: 1500000 }
     ]
   }
 ];
